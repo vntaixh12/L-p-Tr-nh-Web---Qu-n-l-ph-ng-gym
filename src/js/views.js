@@ -23,6 +23,8 @@ const statusLabel = (item) => {
 const todayCheckins = (data) => data.checkins.filter((entry) => localDate(entry.time) === localDate());
 
 export function renderDashboard(data) {
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "buổi sáng" : hour < 18 ? "buổi chiều" : "buổi tối";
   const active = data.members.filter((item) => currentStatus(item) === "active");
   const todayEntries = todayCheckins(data);
   const expiring = active.filter((item) => (new Date(`${item.expiresAt}T00:00:00`) - new Date(`${localDate()}T00:00:00`)) / 86400000 <= 14);
@@ -30,7 +32,7 @@ export function renderDashboard(data) {
   const revenue = data.payments.filter((item) => item.date.startsWith(month)).reduce((sum, item) => sum + Number(item.amount), 0);
   const recentPayments = [...data.payments].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   const recentVisits = [...todayEntries].slice(0, 5);
-  return `${heading("TỔNG QUAN PHÒNG TẬP", "Chào buổi sáng, Admin ✦", "Cùng xem nhanh tình hình hoạt động hôm nay.", actionButton("Thêm hội viên", "add-member"))}
+  return `${heading("TỔNG QUAN PHÒNG TẬP", `Chào ${greeting}, Admin ✦`, "Cùng xem nhanh tình hình hoạt động hôm nay.", actionButton("Thêm hội viên", "add-member"))}
     <section class="stats-grid">
       <article class="stat-card"><div class="stat-top"><span>Hội viên hoạt động</span><i class="stat-icon icon-purple">♧</i></div><strong>${active.length}</strong><small>Gói tập còn hiệu lực</small></article>
       <article class="stat-card"><div class="stat-top"><span>Check-in hôm nay</span><i class="stat-icon icon-blue">⌁</i></div><strong>${todayEntries.length}</strong><small>Lượt vào phòng tập</small></article>
