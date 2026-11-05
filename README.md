@@ -11,7 +11,7 @@ npm.cmd run build:css
 npm.cmd run dev
 ```
 
-Mở <http://localhost:8000>. Biên dịch lại SCSS sau khi sửa `src/scss/styles.scss`. Có thể dùng Live Server thay cho máy chủ đi kèm. Không mở file HTML trực tiếp bằng `file://` vì ứng dụng sử dụng JavaScript modules và Fetch API.
+Mở <http://localhost:8000>. Biên dịch lại SCSS sau khi sửa `src/css/styles.scss`. Có thể dùng Live Server thay cho máy chủ đi kèm. Không mở file HTML trực tiếp bằng `file://` vì ứng dụng sử dụng JavaScript modules và Fetch API.
 
 ## Chức năng
 
@@ -21,6 +21,7 @@ Mở <http://localhost:8000>. Biên dịch lại SCSS sau khi sửa `src/scss/st
 - Lên lịch lớp, sửa/xóa lớp, theo dõi sức chứa và đăng ký học viên.
 - Ghi nhận gia hạn, thanh toán, chi phí vận hành và xem tổng hợp thu chi.
 - Lưu dữ liệu phòng tập bằng `localStorage`, có dữ liệu mẫu để thử.
+- Đăng nhập demo bằng tài khoản `admin`, mật khẩu `123456`; đăng xuất tại thanh menu bên trái. Tính năng này chỉ lưu trạng thái ở trình duyệt, không phải xác thực bảo mật phía máy chủ.
 - Fetch API công khai hiển thị gợi ý tập luyện; có trạng thái tải, timeout, kiểm tra JSON, xử lý lỗi và nút thử lại.
 - Responsive cho điện thoại, máy tính bảng và desktop.
 
@@ -30,6 +31,6 @@ Mở <http://localhost:8000>. Biên dịch lại SCSS sau khi sửa `src/scss/st
 - `src/js/store.js`: dữ liệu mẫu, xác thực nghiệp vụ và lưu trữ LocalStorage.
 - `src/js/views.js`: kết xuất giao diện từng mục.
 - `src/js/shell.js`: thanh điều hướng và khung dùng chung.
-- `src/scss/styles.scss`: style responsive; `src/css/styles.css` là bản biên dịch cho trình duyệt.
+- `src/css/styles.scss`: style responsive; `src/css/styles.css` là bản biên dịch cho trình duyệt.
 
 Dữ liệu hiện lưu trên trình duyệt đang sử dụng, chưa đồng bộ giữa các thiết bị hoặc có tài khoản và máy chủ.

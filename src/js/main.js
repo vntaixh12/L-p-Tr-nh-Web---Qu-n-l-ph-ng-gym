@@ -3,6 +3,65 @@ import { addDays, localDate } from "./date.js";
 import { renderCheckin, renderClasses, renderDashboard, renderFinance, renderInspiration, renderMembers, renderPlans } from "./views.js";
 import "./shell.js";
 
+const AUTH_STORAGE_KEY = "fitdesk-demo-auth";
+const DEMO_USERNAME = "admin";
+const DEMO_PASSWORD = "123456";
+let authenticated = false;
+
+try {
+  authenticated = localStorage.getItem(AUTH_STORAGE_KEY) === DEMO_USERNAME;
+} catch (error) {
+  console.error("Không thể đọc trạng thái đăng nhập:", error);
+}
+
+if (!authenticated) {
+  document.querySelector(".app-shell").hidden = true;
+  document.querySelector("#modal-root").hidden = true;
+  document.querySelector("#toast-region").hidden = true;
+
+  const loginScreen = document.createElement("main");
+  loginScreen.className = "auth-screen";
+  loginScreen.innerHTML = `
+    <a class="auth-brand" href="./index.html" aria-label="FitDesk">
+      <span class="brand-mark">F</span><strong>fitdesk</strong>
+    </a>
+    <section class="auth-card" aria-labelledby="login-title">
+      <p class="eyebrow">QUẢN LÝ PHÒNG TẬP</p>
+      <h1 id="login-title">Chào mừng trở lại</h1>
+      <p class="auth-description">Đăng nhập để tiếp tục quản lý FitDesk.</p>
+      <form id="login-form">
+        <label class="form-field"><span>Tài khoản</span><input name="username" type="text" autocomplete="username" required autofocus></label>
+        <label class="form-field"><span>Mật khẩu</span><input name="password" type="password" autocomplete="current-password" required></label>
+        <p class="auth-error" id="login-error" role="alert" hidden></p>
+        <button class="button button-primary auth-submit" type="submit">Đăng nhập</button>
+      </form>
+      <p class="auth-demo">Tài khoản demo: <strong>admin</strong> · Mật khẩu: <strong>123456</strong></p>
+      <p class="auth-disclaimer">Đăng nhập demo chỉ lưu trạng thái trên trình duyệt này; không dùng để bảo vệ dữ liệu thật.</p>
+    </section>
+  `;
+  document.body.append(loginScreen);
+
+  loginScreen.querySelector("#login-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const error = loginScreen.querySelector("#login-error");
+    if (form.get("username").trim() !== DEMO_USERNAME || form.get("password") !== DEMO_PASSWORD) {
+      error.textContent = "Tài khoản hoặc mật khẩu không chính xác.";
+      error.hidden = false;
+      return;
+    }
+
+    try {
+      localStorage.setItem(AUTH_STORAGE_KEY, DEMO_USERNAME);
+      window.location.reload();
+    } catch (storageError) {
+      console.error("Không thể lưu trạng thái đăng nhập:", storageError);
+      error.textContent = "Không thể lưu trạng thái đăng nhập. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.";
+      error.hidden = false;
+    }
+  });
+}
+
 const pageRoot = document.querySelector("#page-content");
 const modalRoot = document.querySelector("#modal-root");
 const titles = { dashboard: "Tổng quan", members: "Hội viên", checkin: "Check-in", plans: "Gói tập", classes: "Lịch lớp", finance: "Thu chi", inspiration: "Gợi ý tập luyện" };
@@ -272,6 +331,15 @@ menuToggle.addEventListener("click", () => {
 document.querySelector("#sidebar-backdrop").addEventListener("click", closeSidebar);
 document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeSidebar(); });
 document.querySelector("#reset-data").addEventListener("click", () => confirm("Khôi phục toàn bộ dữ liệu phòng tập mẫu? Dữ liệu hiện tại sẽ bị thay thế.", "Khôi phục", resetData));
+document.querySelector("#logout").addEventListener("click", () => {
+  try {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    window.location.reload();
+  } catch (error) {
+    console.error("Không thể đăng xuất:", error);
+    toast("Không thể đăng xuất. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.", "error");
+  }
+});
 document.querySelector("#today-label").textContent = new Intl.DateTimeFormat("vi-VN", { weekday: "short", day: "2-digit", month: "short" }).format(new Date());
 document.title = `FitDesk — ${titles[currentPage]}`;
 document.querySelector("#page-label").textContent = titles[currentPage];
@@ -281,4 +349,4 @@ document.querySelectorAll(".nav-link").forEach((link) => {
   if (isActive) link.setAttribute("aria-current", "page");
 });
 render();
-if (currentPage === "inspiration") loadQuote();
+if (authenticated && currentPage === "inspiration") loadQuote();

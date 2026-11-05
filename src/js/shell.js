@@ -28,6 +28,7 @@ root.innerHTML = `
           <span class="avatar avatar-dark" aria-hidden="true">A</span>
           <span class="user-info"><strong>Quản trị viên</strong><span>FitDesk Gym</span></span>
           <button class="icon-button" id="reset-data" aria-label="Khôi phục dữ liệu mẫu" title="Khôi phục dữ liệu mẫu">↻</button>
+          <button class="icon-button" id="logout" aria-label="Đăng xuất" title="Đăng xuất">↪</button>
         </div>
       </div>
     </aside>

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
-    "build:css": "sass src/scss/styles.scss src/css/styles.css --no-source-map"
+    "build:css": "sass src/css/styles.scss src/css/styles.css --no-source-map"
   },
   "devDependencies": {
     "sass": "^1.105.2"
